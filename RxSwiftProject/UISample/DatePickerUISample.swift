@@ -87,7 +87,7 @@ class DatePickerUISample: UIViewController {
         //创建一个计时器
         Observable<Int>.interval(RxTimeInterval.milliseconds(1000), scheduler: MainScheduler.instance)
             //filter 可以帮忙过滤掉假的，
-            .take(until: isOpenDatePiker.asObservable().filter{ $0 }) //倒计时结束时停止计时器
+            .take(until: isOpenDatePiker.asObservable().map{ $0 }) //倒计时结束时停止计时器
             .subscribe { _ in
                 //每次剩余时间减1
                 var defaultTimeValue = self.defaultTime.value
