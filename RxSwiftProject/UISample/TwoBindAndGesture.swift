@@ -113,5 +113,6 @@ class TwoBindAndGesture: UIViewController {
         alter.addAction(alterAction)
         present(alter, animated: true, completion: nil)
     }
+    ///  测试分支的情况
 }
 
