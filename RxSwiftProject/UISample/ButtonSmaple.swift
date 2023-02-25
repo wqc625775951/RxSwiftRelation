@@ -17,7 +17,6 @@ class ButtonSample: UIViewController {
     lazy var buttonAction = UIButton.init(type: .system)
     lazy var buttonChangeImg = UIButton.init(type: .system)
     lazy var switchUI = UISwitch()
-    
     lazy var buttonSelectedOne = UIButton.init(type: .system)
     lazy var buttonSelectedTwo = UIButton.init(type: .system)
     lazy var buttonSelectedThree = UIButton.init(type: .system)
@@ -32,51 +31,6 @@ class ButtonSample: UIViewController {
     }
     
     // MARK: RxSwift
-    func setSwitchFun() {
-        // 根据swift 改变按钮的状态
-        self.switchUI.rx.isOn
-            .bind(to: self.buttonWithSwitch.rx.isEnabled)
-            .disposed(by: disposeBag)
-    }
-    
-    func setSelected() {
-        self.buttonSelectedOne.isSelected = true
-        // 给按钮一个选择状态
-        let buttonArray = [self.buttonSelectedOne, self.buttonSelectedTwo, self.buttonSelectedThree].map({ $0! })
-        // 先初始化一个按钮列表的序列，然后把已经点击过的按钮加入到另一个序列中，将所有的点击合成一个序列
-        let selectedArray = Observable.from(buttonArray.map({ (btn) in
-            btn.rx.tap.map({ btn })
-        }))
-        .merge()
-        
-        for btn in buttonArray {
-            selectedArray.map({ btn == $0 })
-                .bind(to: btn.rx.isSelected)
-                .disposed(by: disposeBag)
-        }
-    }
-    
-    func setBackgoundImg() {
-        // 更改按钮背景
-        time.map({
-            let imageName = $0 % 2 == 1 ? "oddNum" : "evenNum"
-            return UIImage(named: imageName)!
-        })
-        .bind(to: self.buttonChangeImg.rx.backgroundImage())
-        .disposed(by: disposeBag)
-    }
-    
-    func setRichText() {
-        // 设置富文本
-        time.map(self.setRichTextAttribute(value:))
-            .bind(to: self.buttonRichText.rx.attributedTitle())
-            .disposed(by: disposeBag)
-    }
-    
-    func setAction() {
-        showMessage(name: "按钮点击")
-    }
-    
     func setRxSwift() {
         self.buttonRichText.rx.tap
             .bind { [weak self] in
@@ -130,8 +84,58 @@ class ButtonSample: UIViewController {
         return attributeString
     }
     
-    // MARK: Action
+    // 根据swift 改变按钮的状态
+    func setSwitchFun() {
+        self.switchUI.rx.isOn
+            .bind(to: self.buttonWithSwitch.rx.isEnabled)
+            .disposed(by: disposeBag)
+    }
     
+    // 根据点击的按钮，标示为选择状态
+    func setSelected() {
+        self.buttonSelectedOne.isSelected = true
+        // 给按钮一个选择状态
+        let buttonArray = [self.buttonSelectedOne, self.buttonSelectedTwo, self.buttonSelectedThree].map({ $0! })
+        // 先初始化一个按钮列表的序列，然后把已经点击过的按钮加入到另一个序列中，将所有的点击合成一个序列
+        // from：直接将其他类型转换为 Observable
+        // merge：将多个 Observables 合并成一个，当某一个 Observable 发出一个元素时，他就将这个元素发出
+        let selectedArray = Observable.from(buttonArray.map({ btn in
+            btn.rx.tap.map({ btn })
+        }))
+        .merge()
+        
+        // 遍历，找到当前被选择的按钮
+        for btn in buttonArray {
+            selectedArray.map({ btn == $0 })
+                .bind(to: btn.rx.isSelected)
+                .disposed(by: disposeBag)
+        }
+    }
+    
+    // 更改按钮背景
+    func setBackgoundImg() {
+        time.map({
+            let imageName = $0 % 2 == 1 ? "oddNum" : "evenNum"
+            return UIImage(named: imageName)!
+        })
+        .bind(to: self.buttonChangeImg.rx.backgroundImage())
+        .disposed(by: disposeBag)
+    }
+    
+    // 设置富文本
+    func setRichText() {
+        time.map(self.setRichTextAttribute(value:))
+            .bind(to: self.buttonRichText.rx.attributedTitle())
+            .disposed(by: disposeBag)
+    }
+    
+    // action
+    func setAction() {
+        showMessage(name: "按钮点击")
+    }
+    
+    // MARK: Action
+
     func showMessage(name: String) {
         let alterUI = UIAlertController(title: name, message: nil, preferredStyle: .alert)
         let action = UIAlertAction(title: "确认", style: .cancel, handler: nil)
@@ -181,7 +185,7 @@ class ButtonSample: UIViewController {
         self.buttonChangeImg.snp.makeConstraints { (make) in
             make.top.equalTo(self.buttonAction.snp_bottomMargin).offset(50)
             make.centerX.equalTo(self.buttonRichText)
-            make.height.equalTo(self.buttonRichText)
+            make.height.equalTo(200)
             make.width.equalTo(self.buttonRichText)
         }
         
@@ -215,7 +219,6 @@ class ButtonSample: UIViewController {
             make.width.equalTo(distance)
             make.left.equalTo(self.buttonSelectedTwo.snp_rightMargin).offset(distance / 3)
         }
-        
     }
 }
 

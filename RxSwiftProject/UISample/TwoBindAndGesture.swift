@@ -27,14 +27,13 @@ class TwoBindAndGesture: UIViewController {
     lazy var showOutputInfo = UILabel()
     lazy var userInfo = UserInfo()
     
-    // 问题：改进，使用swipegesture，代替pangesture效果应该更好
+    // 问题：改进，使用swipegesture，代替panGesture效果应该更好
     lazy var gestureDirUp = UISwipeGestureRecognizer()
     lazy var gestureDirDown = UISwipeGestureRecognizer()
     lazy var gestureDirLeft = UISwipeGestureRecognizer()
     lazy var gestureDirRight = UISwipeGestureRecognizer()
     
     // MARK: life cycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
         self.initUIView()

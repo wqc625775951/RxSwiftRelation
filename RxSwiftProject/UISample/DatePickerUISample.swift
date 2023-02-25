@@ -17,13 +17,13 @@ class DatePickerUISample: UIViewController {
     lazy var showTimeLabel = UILabel()
     lazy var showCountDownLabel = UILabel()
     
-    //  默认的定时器时间, 问题： BehaviorRelay,它可以不停地监听值的变化并发送事件
+    //  默认的定时器时间, 问题: BehaviorRelay，它可以不停地监听值的变化并发送事件。
     var defaultTime = BehaviorRelay(value: TimeInterval(180))
     
     // 是否打开时间计时器
     var isOpenDatePiker = BehaviorRelay(value: true)
     
-    // 规定时间格式
+    // 规定时间格式，固定写法
     lazy var dataFormat:DateFormatter = {
        let tempTime = DateFormatter()
         tempTime.dateFormat = "yyyy年MM月dd日 HH:mm"
@@ -39,6 +39,7 @@ class DatePickerUISample: UIViewController {
     }
     
     // MARK: RxSwift
+    
     func setRxSwift() {
         self.datePickerUi.rx.date
             .map({ [weak self] val in
@@ -46,13 +47,15 @@ class DatePickerUISample: UIViewController {
             })
             .bind(to: self.showTimeLabel.rx.text)
             .disposed(by: disposeBag)
-            
+        
+        // 问题: 主线程设置双向绑定，不知道为什么这样写
         DispatchQueue.main.async {
             // 如果使用UIDatePicker时将模式设置为CountDownTimer，即可让该控件作为倒计时器来使用
             _ = self.datePickerUi.rx.countDownDuration  <-> self.defaultTime
         }
         
-        //绑定按钮内容
+        // 绑定按钮内容
+        // combineLatest: 将多个Observables中最新的元素通过一个函数组合起来，然后将这个组合的结果发出来。
         Observable.combineLatest(defaultTime.asObservable(), isOpenDatePiker.asObservable()) { leftTimeValue, countValue in
             if countValue {
                 return "开始"
@@ -61,7 +64,7 @@ class DatePickerUISample: UIViewController {
             }
         }.bind(to: self.startButton.rx.title()).disposed(by: disposeBag)
         
-        //绑定button和datepicker状态（在倒计过程中，按钮和时间选择组件不可用)
+        // 绑定button和datepicker状态（在倒计过程中，按钮和时间选择组件不可用)
         isOpenDatePiker.asDriver().drive(self.startButton.rx.isEnabled).disposed(by: disposeBag)
         isOpenDatePiker.asDriver().drive(self.datePickerUi.rx.isEnabled).disposed(by: disposeBag)
         
@@ -84,7 +87,7 @@ class DatePickerUISample: UIViewController {
         //创建一个计时器
         Observable<Int>.interval(RxTimeInterval.milliseconds(1000), scheduler: MainScheduler.instance)
             //filter 可以帮忙过滤掉假的，
-            .take(until: isOpenDatePiker.asObservable().filter{ $0 }) //倒计时结束时停止计时器
+            .take(until: isOpenDatePiker.asObservable().map{ $0 }) //倒计时结束时停止计时器
             .subscribe { _ in
                 //每次剩余时间减1
                 var defaultTimeValue = self.defaultTime.value
@@ -101,6 +104,7 @@ class DatePickerUISample: UIViewController {
                 self.defaultTime.accept(defaultTimeValue)
             }.disposed(by: disposeBag)
     }
+    
     // MARK: private
     
     func initUIView() {
@@ -115,7 +119,7 @@ class DatePickerUISample: UIViewController {
         }
         
         self.view.addSubview(self.startButton)
-        setButtonStyle(button: self.startButton, title: "开始", fontSize: 16)
+        setButtonStyle(button: self.startButton, title: "开始", fontSize: 16, color: .red)
         self.startButton.snp.makeConstraints { (make) in
             make.top.equalTo(self.datePickerUi.snp_bottomMargin).offset(100)
             make.centerX.equalToSuperview()
@@ -131,7 +135,6 @@ class DatePickerUISample: UIViewController {
             make.width.equalTo(300)
         }
         
-        
         self.view.addSubview(self.showTimeLabel)
         showTimeLabel.textAlignment = .center
         self.showTimeLabel.snp.makeConstraints { (make) in
@@ -140,9 +143,6 @@ class DatePickerUISample: UIViewController {
             make.height.equalTo(50)
             make.width.equalTo(400)
         }
-        
-        
-        
     }
 }
 

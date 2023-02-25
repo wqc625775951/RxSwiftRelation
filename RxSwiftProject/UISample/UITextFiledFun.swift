@@ -36,16 +36,15 @@ class UITextFieldFun: UIViewController {
             .disposed(by: disposeBag)
         
         // 将输入框中数据的个数显示在label中，
-        // 问题：存在drive,那么这个序列不会产生错误事件并且一定在主线程监听
+        // 问题：存在drive,那么这个序列不会产生错误事件并且一定在主线程监听。使用起来不方便和bind的使用容易混
         input.map{ "当前字数：\($0.count)" }
             .drive(self.labelDrive.rx.text)
             .disposed(by: disposeBag)
         
         // 按钮的点击事件
         self.buttonDrive.rx.tap
-            .subscribe( { [weak self] _ in
-                  self?.buttonAction()
-            })
+            // 问题：rxswift 书写的标准格式是啥？
+            .subscribe({[weak self] _ in self?.buttonAction()})
             .disposed(by: disposeBag)
     
         
@@ -56,8 +55,8 @@ class UITextFieldFun: UIViewController {
      
         // 合并文本
         Observable.combineLatest(self.inputDrive.rx.text.orEmpty, self.outputDrive.rx.text.orEmpty) {
-            s1 , s2 in
-            return "合并内容：\(s1)-\(s2)"
+            s1, s2 in
+            return "合并内容：\(s1) 并 \(s2)"
         }
         .map{ $0 }
         .bind(to: self.combineLabel.rx.text)
@@ -109,15 +108,9 @@ class UITextFieldFun: UIViewController {
                 self.textviewLable.text = "选中部分发生变化"
             })
         .disposed(by: disposeBag)
-           
-        
     }
     
     // MARK: helper
-    func setRichTextAttribute(value: NSInteger) ->  Void {
-    
-  
-    }
     
     // MARK: action
     func buttonAction() {
@@ -152,10 +145,10 @@ class UITextFieldFun: UIViewController {
             make.height.equalTo(self.inputDrive)
         }
         
+        // 问题： 如何 button-100-中线-100-label，以中线为轴的对称结构
         self.view.addSubview(self.buttonDrive)
         setButtonStyle(button: self.buttonDrive, title: "commit", fontSize: 20)
         self.buttonDrive.layer.cornerRadius = 10
-
         self.buttonDrive.snp.makeConstraints { (make) in
             make.top.equalTo(self.outputDrive.snp_bottomMargin).offset(50)
             make.left.equalTo(self.view).offset(100)
@@ -187,8 +180,9 @@ class UITextFieldFun: UIViewController {
         self.textviewUI.snp.makeConstraints { (make) in
             make.top.equalTo(self.combineLabel.snp_bottomMargin).offset(50)
             make.left.equalTo(self.outputDrive)
+            // 问题： 让当前窗口的高度等于父窗口的三分之一，这样写是不是和frame差不多？
             let superViewHeightHalf = self.view.frame.height / 3
-            make.height.equalTo(superViewHeightHalf)  // 问题： 让当前窗口的高度等于父窗口的一半？
+            make.height.equalTo(superViewHeightHalf)
             make.width.equalTo(self.outputDrive)
         }
         

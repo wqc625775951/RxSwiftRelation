@@ -10,6 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    // 问题：lazy ?延迟加载？
     lazy var tabBar = UITabBarController()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -17,12 +18,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let signUpPage = SignUpPage()
         let imagePage = ImageSelect()
         let calculator = CalculatorPage()
-        let tableViewSample = TableViewSample()
-        tabBar.setViewControllers([signUpPage, imagePage, calculator, tableViewSample], animated: true)
         let mainVC = MainTableView()
+        
+//        tabBar.setViewControllers([signUpPage, imagePage, calculator, mainVC], animated: true)
+//        let window = UIWindow(windowScene: windowScene)
+//        window.rootViewController = tabBar
+        
+        
+        // 问题：这里如果不加，tableview中的navigation全部都失效了。
+        let tableViewSample = TableViewSample()
         let navigationController = UINavigationController(rootViewController: mainVC)
+        tabBar.setViewControllers([signUpPage, imagePage, calculator, tableViewSample], animated: true)
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = navigationController
+        
+        
         self.window = window
         window.makeKeyAndVisible()
     }

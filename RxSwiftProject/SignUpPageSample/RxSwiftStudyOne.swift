@@ -39,6 +39,8 @@ class RxSwiftStudyOne: UIView {
         self.usernameTitle.snp.makeConstraints { (make) in
             make.top.equalTo(self.safeAreaInsets.bottom).offset(180)
             make.left.equalTo(self).offset(40)
+            
+            // 问题：平时开发的时候，也会直接写数字吗？不是按照比例来的吗？
             make.height.equalTo(30)
             make.width.equalTo(100)
         }
@@ -47,10 +49,15 @@ class RxSwiftStudyOne: UIView {
         usernameTexfiled.borderStyle = UITextField.BorderStyle.roundedRect
         self.usernameTexfiled.snp.makeConstraints { (make) in
             make.top.equalTo(self.usernameTitle.snp_bottomMargin).offset(20)
+        
             make.left.equalTo(self.usernameTitle)
             make.right.equalTo(self).offset(-30)
             make.height.equalTo(self.usernameTitle)
             
+            // 问题：这样写之后，无法保证旋转屏幕是居中，不理解。。
+//            make.centerX.equalToSuperview()
+//            make.height.equalTo(30)
+//            make.width.equalTo(100)
         }
         
         self.addSubview(self.usernameAlert)
@@ -90,17 +97,13 @@ class RxSwiftStudyOne: UIView {
         
         self.commitButton = UIButton.init(type: .system)
         self.addSubview(self.commitButton)
-        self.commitButton.backgroundColor = .lightGray
-        self.commitButton.setTitle("commit", for: .normal)
-        self.commitButton.titleLabel?.textColor = UIColor.black
-        self.commitButton.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: 30)
+        setButtonStyle(button: self.commitButton, title: "commit", fontSize: 30)
         self.commitButton.snp.makeConstraints { (make) in
             make.top.equalTo(self.passwordAlert.snp_bottomMargin).offset(30)
             make.left.equalTo(self.usernameTexfiled)
             make.height.equalTo(50)
             make.right.equalTo(self.usernameTexfiled)
         }
-        
     }
     
     // MARK: helper

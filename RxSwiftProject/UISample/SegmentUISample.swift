@@ -55,9 +55,15 @@ class SegmentUISample: UIViewController {
             .disposed(by: disposeBag)
  
         // slideUI and stepUI
+        // 问题：双向绑定 <-> 暂时不会写，后面补上
         stepUI.rx.value
             .map({ Float($0) })
             .bind(to: self.slideUI.rx.value)
+            .disposed(by: disposeBag)
+        
+        slideUI.rx.value
+            .map({ Double($0) })
+            .bind(to: self.stepUI.rx.value)
             .disposed(by: disposeBag)
     }
     

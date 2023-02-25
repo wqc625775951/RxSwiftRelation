@@ -13,6 +13,7 @@ import SnapKit
 
 // MARK: StuctData
 struct DataModel {
+    // .Type 是类型，类型的 .self 是元类型的值。比如我们说 5 是 Int 类型，此时 5 是 Int 类型的一个值。
     let className: UIViewController.Type?
     let name: String?
 }
@@ -30,11 +31,12 @@ struct DataListModel {
         ])
 }
 
-func setButtonStyle(button: UIButton, title: String, fontSize: CGFloat) {
+func setButtonStyle(button: UIButton, title: String, fontSize: CGFloat, color:UIColor = .blue) {
     button.layer.cornerRadius = 10
     button.backgroundColor = .lightGray
     button.setTitle(title, for: .normal)
     button.isSelected = false
+    button.setTitleColor(color, for: .normal)
     button.titleLabel?.font = UIFont(name: "PingFangSC-Medium", size: fontSize)
 }
 
@@ -42,6 +44,17 @@ class MainTableView: UIViewController {
     lazy var tableView = UITableView()
     let dataList = DataListModel()
     var disposeBag = DisposeBag()
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        self.tabBarItem.title = "列表"
+        self.tabBarItem.image = UIImage(systemName: "paintbrush.pointed")
+        self.tabBarItem.selectedImage = UIImage(systemName: "paintbrush.pointed.fill")
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: life
     override func viewDidLoad() {
@@ -64,10 +77,10 @@ class MainTableView: UIViewController {
         
         tableView.rx.modelSelected(DataModel.self).subscribe({ event in
             let lVCClass = event.element?.className
-            if let lVCClass = lVCClass{
+            if let lVCClass = lVCClass {
                 let lVC = lVCClass.init()
                 self.navigationController?.pushViewController(lVC, animated: true)
-            }
+            }	
         }).disposed(by: disposeBag)
     }
  

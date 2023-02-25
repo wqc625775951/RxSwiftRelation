@@ -24,7 +24,6 @@ class UILabelInterval: UIViewController {
     
     // MARK: RxSwift
     func setRxSwift() {
-        
         self.labelTime.backgroundColor = .lightGray
         self.labelTime.snp.makeConstraints { (make) in
             make.center.equalToSuperview()
@@ -33,9 +32,8 @@ class UILabelInterval: UIViewController {
             make.height.equalTo(100)
         }
         
-        let timer = Observable<Int>.interval(RxTimeInterval.milliseconds(100), scheduler: MainScheduler.instance)
-        
-        timer
+        // 定时器
+        Observable<Int>.interval(RxTimeInterval.milliseconds(100), scheduler: MainScheduler.instance)
             .map(setRichTextAttribute)
             .bind(to: self.labelTime.rx.attributedText)
             .disposed(by: disposeBag)

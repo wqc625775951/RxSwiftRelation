@@ -12,9 +12,8 @@ import SnapKit
 
 class SignUpPage: UIViewController {
     
-    var uiView: RxSwiftStudyOne!
+    lazy var uiView: RxSwiftStudyOne = RxSwiftStudyOne.init(frame: self.view.frame)
     let disposeBag = DisposeBag()
-    var alter = RxSwiftStudyOne()
     
     // MARK: life cycle
     override func viewDidLoad() {
@@ -36,16 +35,18 @@ class SignUpPage: UIViewController {
     
     // MARK: RxSwift
     func setRxSwift() {
+        // orEmpty, string? 转到string
         let isUsernameValid = self.uiView.usernameTexfiled.rx.text.orEmpty
             .map { $0.count >= self.uiView.minimalUsernameLength }
-            .share(replay: 1)
+            .share(replay: 1) // .share(replay: 1)  避免重复加载，节约资源
         
         let isPasswordValid = self.uiView.passwordTexfiled.rx.text.orEmpty
             .map { $0.count >= self.uiView.minimalPasswordLength }
             .share(replay: 1)
         
-        let isNameAndPasswordValid = Observable.combineLatest(isUsernameValid, isPasswordValid) { $0 && $1 }
-        .share(replay: 1)
+        let isNameAndPasswordValid = Observable
+            .combineLatest(isUsernameValid, isPasswordValid) { $0 && $1 }
+            .share(replay: 1)
         
         isUsernameValid
             .bind(to: self.uiView.usernameAlert.rx.isHidden)
@@ -64,7 +65,7 @@ class SignUpPage: UIViewController {
             .disposed(by: disposeBag)
         
         self.uiView.commitButton.rx.tap
-            .subscribe { [weak self] (element) in self?.buttonAction()}
+            .subscribe { [weak self] (element) in self?.buttonAction() }
             .disposed(by: disposeBag)
     }
     
@@ -78,10 +79,8 @@ class SignUpPage: UIViewController {
     }
     
     // MARK: private
-    
     func initUIView() {
         self.view.backgroundColor = .white
-        self.uiView = RxSwiftStudyOne.init(frame: self.view.frame)
         self.view.addSubview(self.uiView)
     }
 }
