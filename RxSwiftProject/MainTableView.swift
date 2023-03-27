@@ -21,8 +21,8 @@ struct DataModel {
 // oppppppppp
 struct DataListModel {
     let data = Observable.just([
-        DataModel(className: SignUpPage.self,name: "登陆"),
-        DataModel(className: ImageSelect.self,name: "图片展示"),
+        DataModel(className: SignUpPage.self,name: "登陆wwwwww"),
+        DataModel(className: ImageSelect.self,name: "图片展示www"),
         DataModel(className: UILabelInterval.self, name: "UILabe计数器"),
         DataModel(className: UITextFieldFun.self, name: "TestField本文编辑框"),
         DataModel(className: ButtonSample.self, name: "按钮相关"),
