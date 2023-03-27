@@ -6,9 +6,7 @@
 //
 
 import UIKit
-// wqwqcq
-// wqwqq
-///wwwwwww
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
