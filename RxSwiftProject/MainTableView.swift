@@ -18,6 +18,7 @@ struct DataModel {
     let name: String?
 }
 
+// wwww
 struct DataListModel {
     let data = Observable.just([
         DataModel(className: SignUpPage.self,name: "登陆"),
@@ -28,7 +29,7 @@ struct DataListModel {
         DataModel(className: SegmentUISample.self, name: "segment相关"),
         DataModel(className: TwoBindAndGesture.self, name: "双向绑定与手势"),
         DataModel(className: DatePickerUISample.self, name: "时间选择器")
-        ])
+    ])
 }
 
 func setButtonStyle(button: UIButton, title: String, fontSize: CGFloat, color:UIColor = .blue) {
@@ -61,7 +62,7 @@ class MainTableView: UIViewController {
         super.viewDidLoad()
         setUI()
     }
-
+    
     // MARK: initUI
     func setUI() {
         self.navigationItem.title = "列表数据"
@@ -83,7 +84,7 @@ class MainTableView: UIViewController {
             }	
         }).disposed(by: disposeBag)
     }
- 
+    
     // MARK: private
     
     // MARK: public
